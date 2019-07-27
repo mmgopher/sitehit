@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"site-hit/config"
+	"site-hit/logger"
 	"site-hit/service"
 )
 
@@ -31,6 +32,7 @@ func (s *Server) handleHits() http.HandlerFunc {
 }
 
 func (s *Server) Start() {
+	logger.Info(fmt.Sprintf("Start http server on address %s",config.GetConfiguration().HttpAddr))
 	s.routes()
 	log.Fatal(http.ListenAndServe(config.GetConfiguration().HttpAddr, s.router))
 }

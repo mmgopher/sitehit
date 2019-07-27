@@ -24,3 +24,8 @@ func ReadGob(filePath string,object interface{}) error {
 	file.Close()
 	return err
 }
+
+func FileExist(path string) bool {
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
+}

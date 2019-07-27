@@ -1,7 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"site-hit/config"
+	"site-hit/logger"
 	"site-hit/util"
 	"sync"
 	"time"
@@ -27,10 +29,22 @@ func (hc *HitCount) IncrementAndGetCounter() int {
 		newHitsMap[i] = hc.hitsMap[i]
 	}
 	hc.hitsMap = newHitsMap
-	util.WriteGob(hc.storageFile,hc.hitsMap)
+	err := util.WriteGob(hc.storageFile,hc.hitsMap)
+	if err != nil {
+		logger.Error("Can't persist counter in storage file",err)
+	}
 	return counter
 }
 
 func NewHitCounter() *HitCount {
-	return &HitCount{hitsMap: make(map[int64]int),windowTime: int64(config.GetConfiguration().WindowTime),storageFile:config.GetConfiguration().StorageFile}
+	storageFile := config.GetConfiguration().StorageFile
+	logger.Info(fmt.Sprintf("Initialize hitCounter. Storage file: %s",storageFile))
+	hitMap := make(map[int64]int)
+	if util.FileExist(storageFile) {
+		err := util.ReadGob(storageFile, &hitMap)
+		if err != nil {
+			logger.Error("Can't read storage file",err)
+		}
+	}
+	return &HitCount{hitsMap: hitMap,windowTime: int64(config.GetConfiguration().WindowTime),storageFile:storageFile}
 }
