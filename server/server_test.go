@@ -17,7 +17,7 @@ func (hc *MockHitCounter) IncrementAndGetCounter() int {
 func TestMainPageHandler(t *testing.T) {
 	srv := New(http.NewServeMux(),&MockHitCounter{})
 	srv.routes()
-	req, err := http.NewRequest("GET", "/health-check", nil)
+	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
