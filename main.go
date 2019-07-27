@@ -17,7 +17,7 @@ func init() {
 
 func main() {
 	logger.Info("Start application")
-	hitCounter := service.NewHitCounter()
+	hitCounter := service.NewHitCounter(service.GobWrite{})
 	srv := server.New(http.NewServeMux(),hitCounter)
 	srv.Start()
 }

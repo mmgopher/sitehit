@@ -7,7 +7,6 @@ import (
 )
 
 type MockHitCounter struct {
-
 }
 
 func (hc *MockHitCounter) IncrementAndGetCounter() int {
@@ -15,7 +14,7 @@ func (hc *MockHitCounter) IncrementAndGetCounter() int {
 }
 
 func TestMainPageHandler(t *testing.T) {
-	srv := New(http.NewServeMux(),&MockHitCounter{})
+	srv := New(http.NewServeMux(), &MockHitCounter{})
 	srv.routes()
 	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
