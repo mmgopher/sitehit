@@ -5,10 +5,10 @@ import (
 	"os"
 )
 
-type GobWrite struct {
+type GobPersistenceManager struct {
 }
 
-func (GobWrite) Write(filePath string, object interface{}) error {
+func (GobPersistenceManager) Write(filePath string, object interface{}) error {
 	file, err := os.Create(filePath)
 	if err == nil {
 		encoder := gob.NewEncoder(file)
@@ -18,8 +18,9 @@ func (GobWrite) Write(filePath string, object interface{}) error {
 	return err
 }
 
-func (GobWrite) Read(filePath string, object interface{}) error {
+func (GobPersistenceManager) Read(filePath string, object interface{}) error {
 	file, err := os.Open(filePath)
+
 	if err == nil {
 		decoder := gob.NewDecoder(file)
 		err = decoder.Decode(object)

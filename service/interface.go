@@ -4,7 +4,7 @@ type HitCounter interface {
 	IncrementAndGetCounter() int
 }
 
-type DataWriter interface {
+type PersistenceManager interface {
 	Write(string, interface{}) error
 	Read(string, interface{}) error
 }

@@ -10,10 +10,10 @@ import (
 )
 
 type HitCount struct {
-	hitsMap     map[int64]int
-	windowTime  int64
-	storageFile string
-	dataWriter  DataWriter
+	hitsMap            map[int64]int
+	windowTime         int64
+	storageFile        string
+	persistenceManager PersistenceManager
 	sync.Mutex
 }
 
@@ -30,14 +30,14 @@ func (hc *HitCount) IncrementAndGetCounter() int {
 		newHitsMap[i] = hc.hitsMap[i]
 	}
 	hc.hitsMap = newHitsMap
-	err := hc.dataWriter.Write(hc.storageFile, hc.hitsMap)
+	err := hc.persistenceManager.Write(hc.storageFile, hc.hitsMap)
 	if err != nil {
 		logger.Error("Can't persist counter in storage file", err)
 	}
 	return counter
 }
 
-func NewHitCounter(dataWriter DataWriter) *HitCount {
+func NewHitCounter(dataWriter PersistenceManager) *HitCount {
 	storageFile := config.GetConfiguration().StorageFile
 	logger.Info(fmt.Sprintf("Initialize hitCounter. Storage file: %s", storageFile))
 	hitMap := make(map[int64]int)
@@ -47,5 +47,5 @@ func NewHitCounter(dataWriter DataWriter) *HitCount {
 			logger.Error("Can't read storage file", err)
 		}
 	}
-	return &HitCount{hitsMap: hitMap, windowTime: int64(config.GetConfiguration().WindowTime), storageFile: storageFile, dataWriter: dataWriter}
+	return &HitCount{hitsMap: hitMap, windowTime: int64(config.GetConfiguration().WindowTime), storageFile: storageFile, persistenceManager: dataWriter}
 }
